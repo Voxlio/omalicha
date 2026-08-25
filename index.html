@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday, My Omalicha</title>
+  <meta name="description" content="A birthday letter for my Omalicha — happy birthday to my everything." />
+  <meta name="theme-color" content="#2a1106" />
+
+  <!-- Favicon / app icons -->
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- Link preview (WhatsApp, iMessage, Facebook, X) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="My Omalicha" />
+  <meta property="og:title" content="Happy Birthday, My Omalicha" />
+  <meta property="og:description" content="A special day for a special woman. Open your birthday letter." />
+  <meta property="og:url" content="https://voxlio.github.io/omalicha/" />
+  <meta property="og:image" content="https://voxlio.github.io/omalicha/assets/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="OMALICHA — happy birthday to my everything" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Happy Birthday, My Omalicha" />
+  <meta name="twitter:description" content="A special day for a special woman. Open your birthday letter." />
+  <meta name="twitter:image" content="https://voxlio.github.io/omalicha/assets/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg-terracotta: #6b3419;
+      --bg-deep: #421e0d;
+      --accent-yellow: #f5b041;
+      --accent-cream: #faedd9;
+      --text-muted: #e7cfba;
+      --border-dotted: #f5b041;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-terracotta);
+      background-image: radial-gradient(circle at 50% 20%, rgba(245, 176, 65, 0.12) 0%, transparent 60%),
+                        linear-gradient(180deg, #5a2810 0%, #351608 100%);
+      color: var(--accent-cream);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Intro Overlay */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #2a1106;
+      background-image: radial-gradient(circle at center, #57250e 0%, #1d0a03 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 24px;
+      text-align: center;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+    }
+
+    #loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loading-sub {
+      color: var(--accent-yellow);
+      font-size: 0.85rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .loading-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(2.4rem, 8vw, 5.5rem);
+      letter-spacing: 2px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--accent-yellow);
+      margin-bottom: 24px;
+      max-width: 800px;
+    }
+
+    .start-btn {
+      background: var(--accent-yellow);
+      color: #2a1106;
+      border: 2px solid var(--accent-yellow);
+      padding: 16px 40px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .start-btn:hover {
+      background: transparent;
+      color: var(--accent-yellow);
+      transform: translateY(-2px);
+    }
+
+    /* Floating Audio Player */
+    .music-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--accent-yellow);
+      color: #2a1106;
+      border: 2px solid #2a1106;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+
+    .music-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .music-btn.playing {
+      animation: pulseMusic 2s infinite;
+    }
+
+    @keyframes pulseMusic {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 176, 65, 0.7); }
+      70% { box-shadow: 0 0 0 14px rgba(245, 176, 65, 0); }
+    }
+
+    /* Hero Header */
+    .hero {
+      text-align: center;
+      padding: 70px 20px 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 5px;
+      font-weight: 700;
+      color: var(--accent-yellow);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(3.2rem, 11vw, 7.8rem);
+      line-height: 0.95;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-yellow);
+    }
+
+    .dotted-divider {
+      width: 100%;
+      border-top: 2px dotted rgba(245, 176, 65, 0.6);
+      margin: 24px 0 18px;
+    }
+
+    .hero-sub {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      letter-spacing: 3px;
+      color: var(--accent-cream);
+      text-transform: uppercase;
+    }
+
+    /* Message Area Container with Background Photo */
+    .message-container {
+      max-width: 820px;
+      margin: 30px auto 90px;
+      padding: 0 20px;
+    }
+
+    .message-card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid rgba(245, 176, 65, 0.35);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+
+      /* Photo fallback chain: a local copy at assets/photo.jpg wins if you add
+         one, otherwise the i.ibb.co copy is used. If both ever fail, --bg-deep
+         keeps the letter readable instead of the card going blank. */
+      background-color: var(--bg-deep);
+      background-image: url('assets/photo.jpg'),
+                        url('https://i.ibb.co/zVJ2CdGM/IMG-20260823-WA0174.jpg');
+      background-size: cover, cover;
+      background-position: center, center;
+      background-repeat: no-repeat, no-repeat;
+      background-attachment: local, local;
+    }
+
+    /* Scrim overlay for high legibility */
+    .card-overlay {
+      background: linear-gradient(
+        180deg,
+        rgba(30, 11, 4, 0.45) 0%,
+        rgba(45, 17, 6, 0.50) 50%,
+        rgba(20, 7, 2, 0.55) 100%
+      );
+      padding: 50px clamp(24px, 6vw, 56px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .letter-body {
+      font-size: 1.08rem;
+      line-height: 1.85;
+      color: var(--text-muted);
+      font-weight: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .letter-body p {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .letter-body p.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .highlight-quote {
+      margin: 12px 0;
+      padding: 20px 24px;
+      border-left: 4px solid var(--accent-yellow);
+      background: rgba(245, 176, 65, 0.08);
+      font-size: 1.12rem;
+      font-style: italic;
+      color: var(--accent-cream);
+    }
+
+    .closing-block {
+      margin-top: 16px;
+      padding-top: 24px;
+      border-top: 1px dashed rgba(245, 176, 65, 0.4);
+    }
+
+    .closing-bold {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent-yellow);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Audio Element -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="happybirthday.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Floating Audio Button -->
+  <button class="music-btn" id="music-toggle" type="button"
+          aria-label="Play music" aria-pressed="false" title="Play music">
+    <svg id="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+    <svg id="pause-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" style="display: none;">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+    </svg>
+  </button>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-sub">A Special Celebration</div>
+    <h1 class="loading-title">IT'S MY OMALICHA'S DAY</h1>
+    <button class="start-btn" id="start-btn">
+      <span>Open Birthday Letter</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Hero Header -->
+  <header class="hero">
+    <div class="hero-eyebrow">A Special Day For A Special Woman</div>
+    <h1 class="hero-title">MY OMALICHA</h1>
+    <div class="dotted-divider"></div>
+    <div class="hero-sub">HAPPY BIRTHDAY TO MY EVERYTHING</div>
+  </header>
+
+  <!-- Message Section -->
+  <main class="message-container">
+    <div class="message-card">
+      <div class="card-overlay">
+        <div class="letter-body">
+          <p>Happy birthday to the woman who holds such a special place in my heart. Before anything else, I want you to know how grateful I am that you exist, and that out of everyone in this world, I get to call you mine.</p>
+
+          <p>I know things haven't been perfect between us. We've disagreed, misunderstood each other, said things we didn't mean. I won't pretend those moments didn't hurt. But through all of it, one thing hasn't changed: I still care about you deeply. I still see the woman I fell in love with — the one whose voice changes my mood, whose happiness genuinely matters to me, who I want to see win in life.</p>
+
+          <p>Today isn't about our problems. It's about you — your strength, your beauty, your stubbornness, your dreams, everything that makes you who you are.</p>
+
+          <p>I pray this new chapter brings you real happiness, peace that doesn't depend on circumstance, and doors opening where you least expect them. I pray you meet people who genuinely want to see you succeed, and that you have the wisdom, strength, and courage for whatever comes next.</p>
+
+          <p>I don't know exactly what the future holds for us, but I know what I want: for us to communicate better, forgive faster, listen more, and love each other without either of us feeling alone. Not perfect — just real. Two people who can hurt each other by accident and still find their way back.</p>
+
+          <div class="highlight-quote">
+            "I believe what we've built deserves patience, and that love isn't only about the easy days — sometimes it's having the courage to say, 'we're not okay right now, but I don't want to give up on us.' That's how I feel about you."
+          </div>
+
+          <p>I also want to say sorry for the times I've made you feel hurt, ignored, or unloved. I don't always get it right. But I'm learning, and I want this new chapter to teach us both how to love each other better — not just in words, in actions.</p>
+
+          <p>I hope today reminds you how valuable you are. I hope you see what I see: a woman with real potential, still becoming who she's meant to be, who deserves good things and deep love.</p>
+
+          <p>Thank you for the memories, the laughter, the conversations, and for being part of my life. Thank you for being my Omalicha.</p>
+
+          <p>If I could make one wish for you, it's this: that this chapter brings you closer to the woman you've always wanted to become — and that I get to be beside you as you become her.</p>
+
+          <p>So today, forget the arguments, just for today. Smile. Eat your cake. Take pictures. Feel loved, because you deserve to.</p>
+
+          <div class="closing-block">
+            <p>Happy birthday, my Omalicha. I love you, and I'm willing to keep trying, keep growing, and keep fighting for us — because I believe we can always choose to rise together.</p>
+            <div class="closing-bold">Here's to another beautiful year of your life, and to more beautiful chapters of us. ✨</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const audio = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-toggle');
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const startBtn = document.getElementById('start-btn');
+    const loadingScreen = document.getElementById('loading-screen');
+    const paragraphs = document.querySelectorAll('.letter-body p, .highlight-quote, .closing-block');
+
+    function fireConfetti() {
+      const count = 180;
+      const defaults = { origin: { y: 0.65 } };
+
+      function fire(particleRatio, opts) {
+        confetti(Object.assign({}, defaults, opts, {
+          particleCount: Math.floor(count * particleRatio)
+        }));
+      }
+
+      fire(0.3, { spread: 35, startVelocity: 50, colors: ['#f5b041', '#faedd9', '#ff7a3d'] });
+      fire(0.25, { spread: 70, colors: ['#f5b041', '#ffffff'] });
+      fire(0.35, { spread: 110, decay: 0.92, scalar: 0.9 });
+      fire(0.1, { spread: 130, startVelocity: 30, decay: 0.92 });
+    }
+
+    function revealLetter() {
+      paragraphs.forEach((el, idx) => {
+        setTimeout(() => {
+          el.classList.add('revealed');
+        }, idx * 170);
+      });
+    }
+
+    // Drive the button off the audio element's own events, so the icon can never
+    // disagree with what's actually playing (blocked autoplay, OS pause, etc.)
+    function setMusicUI(playing) {
+      playIcon.style.display = playing ? 'none' : 'block';
+      pauseIcon.style.display = playing ? 'block' : 'none';
+      musicBtn.classList.toggle('playing', playing);
+      musicBtn.setAttribute('aria-pressed', String(playing));
+      const label = playing ? 'Pause music' : 'Play music';
+      musicBtn.setAttribute('aria-label', label);
+      musicBtn.title = label;
+    }
+
+    audio.addEventListener('play',  () => setMusicUI(true));
+    audio.addEventListener('pause', () => setMusicUI(false));
+    audio.addEventListener('ended', () => setMusicUI(false));
+
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play().catch(() => setMusicUI(false));
+      } else {
+        audio.pause();
+      }
+    }
+
+    musicBtn.addEventListener('click', toggleAudio);
+
+    let opened = false;
+    startBtn.addEventListener('click', () => {
+      if (opened) return;          // don't double-fire confetti on a second tap
+      opened = true;
+
+      audio.play().catch(() => setMusicUI(false));
+
+      loadingScreen.classList.add('hidden');
+      fireConfetti();
+      revealLetter();
+    });
+  </script>
+</body>
+</html>
